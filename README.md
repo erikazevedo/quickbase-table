@@ -62,5 +62,4 @@ const apiData = await Projects.search({
         }
     ]
 })
-projects.value = r.data;
 ```
