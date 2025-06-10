@@ -15,6 +15,9 @@ For local development or testing outside of Quickbase, the module looks for `QB_
 I recommend using `vite` with `vite-plugin-singlefile` to bundle single-page apps for convenience when creating code pages.
 
 ## Usage
+
+[API documentation](src/API.md)
+
 `QuickbaseTable` is the only class provided. Extend it to provide the details about your table:
 ```javascript
 import QuickbaseTable from "quickbase-table";
