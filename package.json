@@ -1,0 +1,12 @@
+{
+  "name": "quickbase-table",
+  "version": "0.1.4",
+  "private": false,
+  "type": "module",
+  "author": "Erik Azevedo",
+  "license": "ISC",
+  "description": "",
+  "exports": {
+    ".": "./src/QuickbaseTable.js"
+  }
+}
