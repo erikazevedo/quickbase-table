@@ -1,11 +1,14 @@
 {
   "name": "quickbase-table",
   "version": "0.1.4",
-  "private": false,
   "type": "module",
   "author": "Erik Azevedo",
   "license": "ISC",
   "description": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/erikazevedo/quickbase-table.git"
+  },
   "scripts": {
     "document": ".\\node_modules\\.bin\\jsdoc2md.cmd src/QuickbaseTable.js > src/API.md"
   },
