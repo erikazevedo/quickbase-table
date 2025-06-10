@@ -12,6 +12,7 @@ Class for interacting with a quickbase table.Handles authentication using brows
     * [.getReport(reportId, top, skip)](#QuickbaseTable.getReport) ⇒
     * [.getReportMeta(reportId)](#QuickbaseTable.getReportMeta) ⇒
     * [.createRecords(data)](#QuickbaseTable.createRecords) ⇒
+    * [.search(options)](#QuickbaseTable.search) ⇒
     * [.searchRecords(query, fields, maxResults)](#QuickbaseTable.searchRecords) ⇒
     * [.getRecordById(recordId, fields)](#QuickbaseTable.getRecordById) ⇒
     * [.getHref(path)](#QuickbaseTable.getHref) ⇒
@@ -84,10 +85,27 @@ Create new records on the table. Provide the key field to update an existing rec
 | --- | --- | --- |
 | data | <code>Object</code> | Records to create. Pass in an array of new record objects of the form: [{fieldId1: fieldValue1, fieldId2: fieldValue2, ...}, ...] |
 
+<a name="QuickbaseTable.search"></a>
+
+### QuickbaseTable.search(options) ⇒
+Search for records based on a query in quickbase query language.
+
+**Kind**: static method of [<code>QuickbaseTable</code>](#QuickbaseTable)  
+**Returns**: Object including resulting records and field data  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| options | <code>Object</code> | Options Object |
+| options.query | <code>string</code> | The Query string in Quickbase Query Language |
+| options.fields | <code>Array.&lt;number&gt;</code> | Array of field IDs to return. If not provided, will return default fields |
+| options.maxResults | <code>number</code> | Maximum number of results to return |
+| options.sortBy | <code>Array.&lt;Object&gt;</code> | Array of {fieldId: number, order: 'ASC' or 'DESC'} to sort results |
+| options.skip | <code>number</code> | Number of results to skip, for pagination |
+
 <a name="QuickbaseTable.searchRecords"></a>
 
 ### QuickbaseTable.searchRecords(query, fields, maxResults) ⇒
-Search for records based on a query in quickbase query language.
+(Deprecated) Search for records based on a query in quickbase query language.
 
 **Kind**: static method of [<code>QuickbaseTable</code>](#QuickbaseTable)  
 **Returns**: Object including resulting records and field data  

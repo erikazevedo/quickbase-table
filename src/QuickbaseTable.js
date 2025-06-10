@@ -229,6 +229,16 @@ class QuickbaseTable {
         return returnData;
     }
 
+    /**
+     * Search for records based on a query in quickbase query language.
+     * @param {Object} options Options Object
+     * @param {string} options.query The Query string in Quickbase Query Language
+     * @param {number[]} options.fields Array of field IDs to return. If not provided, will return default fields
+     * @param {number} options.maxResults Maximum number of results to return
+     * @param {Object[]} options.sortBy Array of {fieldId: number, order: 'ASC' or 'DESC'} to sort results
+     * @param {number} options.skip Number of results to skip, for pagination
+     * @returns Object including resulting records and field data
+     */
     static async search(options) {
         return await this.searchRecords(
             options.query, 
@@ -240,7 +250,7 @@ class QuickbaseTable {
     }
 
     /**
-     * Search for records based on a query in quickbase query language.
+     * (Deprecated) Search for records based on a query in quickbase query language.
      * @param {string} query Query in quickbase query language
      * @param {number[]} fields Array of field IDs to return. If not provided, will return default fields
      * @param {number} maxResults Maximum number of results to return
