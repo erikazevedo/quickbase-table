@@ -11,7 +11,7 @@ Class for interacting with a quickbase table.Handles authentication using brows
     * [.getPrimaryKey()](#QuickbaseTable.getPrimaryKey) ⇒
     * [.getReport(reportId, top, skip)](#QuickbaseTable.getReport) ⇒
     * [.getReportMeta(reportId)](#QuickbaseTable.getReportMeta) ⇒
-    * [.createRecords(data)](#QuickbaseTable.createRecords) ⇒
+    * [.createRecords(data, mergeFieldId)](#QuickbaseTable.createRecords) ⇒
     * [.search(options)](#QuickbaseTable.search) ⇒
     * [.searchRecords(query, fields, maxResults)](#QuickbaseTable.searchRecords) ⇒
     * [.getRecordById(recordId, fields)](#QuickbaseTable.getRecordById) ⇒
@@ -75,15 +75,16 @@ Get metadata for a report
 
 <a name="QuickbaseTable.createRecords"></a>
 
-### QuickbaseTable.createRecords(data) ⇒
+### QuickbaseTable.createRecords(data, mergeFieldId) ⇒
 Create new records on the table. Provide the key field to update an existing record
 
 **Kind**: static method of [<code>QuickbaseTable</code>](#QuickbaseTable)  
 **Returns**: Success/fail data object  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| data | <code>Object</code> | Records to create. Pass in an array of new record objects of the form: [{fieldId1: fieldValue1, fieldId2: fieldValue2, ...}, ...] |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| data | <code>Object</code> |  | Records to create. Pass in an array of new record objects of the form: [{fieldId1: fieldValue1, fieldId2: fieldValue2, ...}, ...] |
+| mergeFieldId | <code>number</code> | <code></code> | Field ID to merge on (instead of default key).  This field must be set as unique in Quickbase. |
 
 <a name="QuickbaseTable.search"></a>
 

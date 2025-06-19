@@ -5,6 +5,7 @@
 class QuickbaseTable {
     static tableId = null;
     static host = '';
+    static userToken = null;
     static RECORD_ID = 3;
     static EQUALS = 'EX';
     static GREATER_THAN = 'GT';
@@ -17,36 +18,41 @@ class QuickbaseTable {
      */
     static async getToken() {
         if (!this.tableId) {
-            return null;
+            return;
         }
-        if (window.QB_TOKEN) {
+        if (this.userToken) {
+            this.token = `QB-USER-TOKEN ${this.userToken}`;
+            return;
+        }
+        if (window && window.QB_TOKEN) {
             this.token = window.QB_TOKEN;
+            return;
         }
-        else {
-            // Ask Quickbase for a token
-            const resp = await fetch(`https://api.quickbase.com/v1/auth/temporary/${this.tableId}`, {
-                headers: {
-                    'QB-Realm-Hostname': this.host,
-                    'User-Agent': 'CodePage',
-                    // 'QB-App-Token': '{QB-App-Token}',
-                    'Content-Type': 'application/json'
-                },
-                credentials: "include",
-            });
-            const data = await resp.json();
-            const token = data.temporaryAuthorization;
-            if (token) {
-                this.token = `QB-TEMP-TOKEN ${token}`;
-                // Expire the token after 5 minutes locally
-                // (QB does it serverside)
-                setTimeout(() => { 
-                    this.token = null; 
-                    console.log('Token expired');
-                }, 300000);
-            } else {
-                console.log("Unable to auth with Quickbase");
-            }
+        
+        // Ask Quickbase for a token
+        const resp = await fetch(`https://api.quickbase.com/v1/auth/temporary/${this.tableId}`, {
+            headers: {
+                'QB-Realm-Hostname': this.host,
+                'User-Agent': 'CodePage',
+                // 'QB-App-Token': '{QB-App-Token}',
+                'Content-Type': 'application/json'
+            },
+            credentials: "include",
+        });
+        const data = await resp.json();
+        const token = data.temporaryAuthorization;
+        if (token) {
+            this.token = `QB-TEMP-TOKEN ${token}`;
+            // Expire the token after 5 minutes locally
+            // (QB does it serverside)
+            setTimeout(() => { 
+                this.token = null; 
+                console.log('Token expired');
+            }, 300000);
+        } else {
+            console.log("Unable to auth with Quickbase");
         }
+    
     }
 
     /**
@@ -205,13 +211,19 @@ class QuickbaseTable {
      * Create new records on the table. Provide the key field to update an existing record
      * @param {Object} data Records to create. Pass in an array of new record objects of the form:
      * [{fieldId1: fieldValue1, fieldId2: fieldValue2, ...}, ...]
+     * @param {number} mergeFieldId Field ID to merge on (instead of default key). 
+     * This field must be set as unique in Quickbase. 
      * @returns Success/fail data object
      */
-    static async createRecords(data) {
+    static async createRecords(data, mergeFieldId = null) {
         const payload = {
             to: this.tableId,
             data: [],
             fieldsToReturn: [],
+        }
+
+        if (mergeFieldId) {
+            payload.mergeFieldId = mergeFieldId;
         }
 
         for (const item of data) {
