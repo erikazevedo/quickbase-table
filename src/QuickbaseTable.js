@@ -6,6 +6,7 @@ class QuickbaseTable {
     static tableId = null;
     static host = '';
     static userToken = null;
+    static agent = null;
     static RECORD_ID = 3;
     static EQUALS = 'EX';
     static GREATER_THAN = 'GT';
@@ -20,25 +21,33 @@ class QuickbaseTable {
         if (!this.tableId) {
             return;
         }
+        // If a token is explicitly passed, set it as a user token
         if (this.userToken) {
             this.token = `QB-USER-TOKEN ${this.userToken}`;
             return;
         }
+        // If window exists and QB_TOKEN is set there, use that
         if (window && window.QB_TOKEN) {
             this.token = window.QB_TOKEN;
             return;
         }
         
-        // Ask Quickbase for a token
-        const resp = await fetch(`https://api.quickbase.com/v1/auth/temporary/${this.tableId}`, {
+        const requestOptions = {
             headers: {
                 'QB-Realm-Hostname': this.host,
                 'User-Agent': 'CodePage',
-                // 'QB-App-Token': '{QB-App-Token}',
                 'Content-Type': 'application/json'
             },
             credentials: "include",
-        });
+        }
+
+        // For use server side
+        if (this.agent) {
+            requestOptions.dispatcher = this.agent;
+        }
+        
+        // Ask Quickbase for a token
+        const resp = await fetch(`https://api.quickbase.com/v1/auth/temporary/${this.tableId}`, requestOptions);
         const data = await resp.json();
         const token = data.temporaryAuthorization;
         if (token) {
@@ -64,6 +73,7 @@ class QuickbaseTable {
      */
     static async callAPI(endpoint, method = "POST", body = null, signal = null) {
         // Get a token if we don't have one
+        
         if (!this.token) {
             await this.getToken();
         }
@@ -82,21 +92,28 @@ class QuickbaseTable {
                     'Content-Type': 'application/json',
                     'Authorization': this.token,
                 },
-                signal: signal
+                signal: signal,
             }
-    
+
+            // For use server side
+            if (this.agent) {
+                requestOptions.dispatcher = this.agent;
+            }
+        
             if (body) {
                 requestOptions.body = JSON.stringify(body);
             }
     
             // Fetch data from Quickbase
             let resp = null;
+
             try {
                 resp = await fetch(
                     "https://api.quickbase.com/v1" + endpoint,
-                    requestOptions);
+                    requestOptions,
+                );
             } 
-            catch {
+            catch (e) {
                 this.fetching = false;
                 return {};
             }
@@ -136,17 +153,11 @@ class QuickbaseTable {
         }
     }
 
-    // static async getUsers() {
-    //     const data = await this.callAPI('/users');
-    //     return data;
-    // }
-
     /**
      * Get the primary key for the table
      * @returns Primary key integer ID 
      */
     static async getPrimaryKey() {
-        // console.log(`Fetch primary key for ${this.tableId}`);
         let primaryKey = null;
         const data = await this.callAPI(`/fields?tableId=${this.tableId}`, "GET");
         for (const fld of data) {
@@ -236,8 +247,8 @@ class QuickbaseTable {
             }
             payload.data.push(newRecord);
         }
-
         const returnData = await this.callAPI("/records", "POST", payload);
+
         return returnData;
     }
 

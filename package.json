@@ -10,13 +10,15 @@
     "url": "https://github.com/erikazevedo/quickbase-table.git"
   },
   "scripts": {
-    "document": ".\\node_modules\\.bin\\jsdoc2md.cmd src/QuickbaseTable.js > src/API.md"
+    "document": ".\\node_modules\\.bin\\jsdoc2md.cmd src/QuickbaseTable.js > src/API.md",
+    "test": "node --env-file-if-exists ./env/.env.local --test"
   },
   "exports": {
     ".": "./src/QuickbaseTable.js"
   },
   "devDependencies": {
     "jsdoc": "^4.0.4",
-    "jsdoc-to-markdown": "^9.1.1"
+    "jsdoc-to-markdown": "^9.1.1",
+    "undici": "^7.10.0"
   }
 }
